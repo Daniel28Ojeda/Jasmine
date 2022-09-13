@@ -1,0 +1,743 @@
+- Instalar Node.js
+
+---------------------------------------------
+- Instalar Jasmine globalmente
+$ npm install jasmine -g
+
+Caso não esteja no Windows, não se esqueça de acrescentar “sudo” antes do comando.
+Isso irá instalar o Jasmine globalmente em sua máquina, o que nos permitirá executar o comando “jasmine” pelo terminal.
+
+Vamos criar um diretório com o nome “Testes Jasmine”, que será onde iremos escrever nossos códigos.
+
+----------------------------------------------
+- Iniciar projeto
+
+Dentro do diretório, abra o terminal e execute o comando:
+$ jasmine init
+
+Caso de erro, executar o código 
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
+Isso irá criar um diretório chamado “spec“. Dentro desse diretório terá um outro chamado “support”, 
+que contém um arquivo chamado “jasmine.json”, onde estão todas as configurações do Jasmine.
+
+Por padrão, o Jasmine irá procurar por todos os arquivos dentro do diretório “spec” em que o nome termine com “spec.js”. 
+Por isso, todos nossos códigos de teste ficarão dentro deste diretório.
+
+
+----------------------------------------------
+- Iniciar projeto
+
+Para criarmos nosso primeiro teste precisamos ter um código para testar. Na raiz do diretório que acabamos de criar, “Testes Jasmine”, vamos criar um arquivo chamado “hello.js”.
+código no arquivo
+
+Vamos finalmente escrever nosso primeiro código. Para isso, vamos criar um arquivo com o nome “hello-spec.js” dentro do diretório “spec”.
+
+É uma boa prática criar arquivos de teste com o mesmo nome do arquivo que será testado. 
+Como estamos testando o arquivo “hello” e o Jasmine espera por arquivos que terminem com “spec.js”, 
+demos o nome ao nosso arquivo de “hello-spec.js”. 
+Assim fica fácil sabermos que o arquivo trata-se de um teste de um arquivo de nome “hello”.
+código no arquivo
+
+Iniciamos primeiro a função “describe()” do Jasmine. Esta função cria o que chamamos de “suíte”. 
+Normalmente define algum componente da nossa aplicação. 
+Neste caso, chamamos de “Hello”, já que é o nome do nosso arquivo. 
+Pode ser o nome de uma classe, funcionalidade, objeto, tela, etc. 
+É só uma string comum que decidimos um nome para nos ajudar a manter a organização dos testes.
+
+Então, após dar um nome para a suíte, uma função anônima é passada, e dentro dela é que nós começamos efetivamente a criar os testes.
+
+Veja que nós executamos uma função “it()”. Ela é o que chamamos de “especificação”, ou “spec” (de specification). 
+É simplesmente uma função onde primeiro passamos uma string onde indicamos o que um certo pedaço de código deve fazer.
+
+Note que ainda não estamos programando nada. Essa string não é um comando, é simplesmente uma string onde descrevemos o que queremos. 
+
+A função “it()” também recebe uma função de callback, que é onde finalmente escreveremos algum teste.
+
+Nós executamos a função “hello()” e guardamos o retorno dela em uma variável que demos o nome de “text”. E finalmente vem o nosso teste.
+
+Passamos a variável “text” para uma função chamada “expect()”. Essa função armazena o valor passado. 
+Em seguida executamos a função “toEqual()”, e passamos para ela a string “Hello World!”.
+
+A função “toEqual()” verifica se um valor é igual ao valor passado para ela. Essas funções que checam valores se chamam “Matchers”.
+
+Vamos executar este teste. Com o terminal aberto no diretório raiz, execute o comando:
+$ jasmine
+
+Resultado:
+1 spec, 0 failures
+Finished in 0.008 seconds
+
+Agora vamos mudar o nosso teste. Na função “toEqual()”, tire a string “Hello World!” e coloque a string “Welcome!“
+
+Resultado:
+Failures:
+1) Hello has to print "Hello World!"
+  Message:
+    Expected 'Hello World!' to equal 'Welcome!'.
+  Stack:
+        at <Jasmine>
+        at UserContext.<anonymous> (E:\Daniel\App\Jasmine\Testes_jasmine\spec\hello-spec.js:5:22)
+        at <Jasmine>
+
+1 spec, 1 failure
+Finished in 0.01 seconds
+
+
+---------------------------------------------
+- Automatização
+
+Não é prático termos que ficar executando o Jasmine a cada alteração que fizermos em nosso código. 
+Por isso é melhor que a gente tenha uma maneira em que o Jasmine seja iniciado sozinho quando algum arquivo for alterado.
+
+Muitas ferramentas disponibilizam isso, mas o Jasmine não disponibiliza nativamente.
+
+Vamos instalar o Nodemon com o comando:
+$ npm install nodemon -g
+
+O Nodemon é uma ferramenta que executa o Node.js e reinicia ele assim que uma modificação em algum arquivo for localizada.
+
+Com o Nodemon instalado, ao invés de simplesmente chamar o Jasmine pelo terminal, execute o seguinte comando:
+$ nodemon --exec jasmine
+
+Com isso o Nodemon será iniciado e irá executar o comando “jasmine”. Quando alterarmos algum código ou teste, o comando “jasmine” será executado novamente.
+Para parar, control+C
+
+
+---------------------------------------------
+- TDD - Test Driven Development
+
+Um termo muito comum que se vê por aí é o TDD, que indica “Desenvolvimento Orientado a Testes”.
+Isso significa que ao seguir o TDD, os testes são escritos primeiro, e depois o código.
+
+Com isso, podemos definir no teste quais são os requisitos de determinada funcionalidade.
+Então, ao criamos a funcionalidade, os testes automatizados indicarão quando finalmente terminarmos de escrever uma funcionalidade que realmente entrega tudo o que deveria fazer.
+
+
+---------------------------------------------
+- Matchers
+
+A comparação, “toEqual()”, é conhecida como “Matcher”. Ela é o matcher mais simples, e basicamente compara dois valores.
+
+Existem outras:
+    -------------
+    - toBe
+    O toBe parece com o toEqual, mas possui uma pequena diferença. 
+    Quando fazemos comparação com objetos, o toBe verifica se ambos são o mesmo objeto, não importando se são simplesmente iguais.
+    
+    Ex:
+    var a = {nome: 'TreinaWeb'};
+    var b = {nome: 'TreinaWeb'};
+
+    expect(a).toEqual(b); // 1
+    expect(a).toBe(b);    // 2
+    expect(a).toBe(a);    // 3
+
+    Em 1 dará sucesso, pois os objetos são iguais.
+    Em 2 dará erro, pois os objetos, mesmo sendo iguais, não são os mesmos.
+    Em 3 dará sucesso, pois os objetos testados são os mesmos.
+
+    -------------
+    -toBeTruthy e toBeFalsy
+    Esses matchers servem para verificar se um valor é verdadeiro ou falso.
+
+    Ex:
+    expect("TreinaWeb").toBeTruthy();
+    expect(0).toBeFalsy();
+
+    Note que não passamos apenas “true” e “false” para o “expect()”, mas passamos outros valores. 
+    Os dois testes irão passar, pois essas funções fazem a validação de acordo com a validação do “==” no JavaScript.
+
+    Isso significa que os seguintes valores são considerados falsos:
+    false
+    0
+    “”
+    undefined
+    null
+    NaN
+    Qualquer valor diferente dos listados acima são considerados verdadeiros.
+
+    Caso queira que os valores sejam apenas true ou false, prefira usar o matcher toEqual com os valores true ou false.
+
+    -------------
+    -not
+    Muitas vezes é muito útil fazermos algo invertido ao que as funcionalidades nos permitem. Com “not” nós podemos negar as comparações.
+
+    Ex:
+    expect(false).not.toBeTruthy();
+
+    -------------
+    -toContain
+    nos ajuda a verificar se determinado elemento está presente no meio de outros elementos. 
+    Isso serve tanto para um item dentro de uma lista quanto para caracteres dentro de uma string
+
+    Ex:
+    expect([1,2,3]).toContain(2);
+    expect("TreinaWeb").toContain("Web");
+    expect("Hello Web").not.toContain("World");
+
+
+    -------------
+    -toBeDefined e toBeUndefined
+    Nos ajuda a verificar se determinado elemento está definido.
+
+    Ex:
+    var obj = {};
+    expect(obj.name).toBeUndefined();
+    obj.name = "TreinaWeb";
+    expect(obj.name).toBeDefined();
+
+
+    -------------
+    -toBeNull
+    Nos ajuda a verificar se algo é nulo.
+
+    Ex:
+    expect(null).toBeNull();
+
+
+    -------------
+    -toBeNan
+    Verifica se algo é NaN (not a number).
+
+    Ex:
+    expect(10).not.toBeNaN();
+    expect(0 / 0).toBeNaN();
+
+
+    -------------
+    -toBeGreaterThan e toBeLessThan
+    Nos permitem verificar se algo é maior ou menor que o valor passado. Essa função funciona para strings também.
+
+    Ex:
+    expect(10).toBeGreaterThan(1);
+    expect(1).toBeLessThan(10);
+    expect(‘a’).toBeLessThan(‘z’);
+
+
+    -------------
+    -toBeCloseTo
+    nos permite verificar se um número é próximo de outro número, 
+    passando uma quantia de precisão de casas decimais para indicar se pode ser considerado próximo ou não.
+
+    Ex:
+    expect(20.3).toBeCloseTo(20.32, 1);
+
+
+    -------------
+    -Matchers com Expressões Regulares
+    Para verificar um valor com expressões regulares, basta usar o Matcher toMatch
+
+    Ex:
+    expect("TreinaWeb").toMatch(/Web/);
+
+
+    -------------
+    -Verificando se uma função retorna erro com toThrow
+    O Matcher toThrow faz com que a gente espere que uma função retorne um erro.
+
+    Ex:
+    var myFunction = function(){
+    throw new Error();
+    }
+    expect(myFunction).toThrow();
+
+
+---------------------------------------------
+- Criando um Matcher
+
+No começo do arquivo, ou logo após a linha do “describe”, vamos colocar a seguinte função:
+var myMatchers = {
+    toBe2: function(util, customEqualityTesters){
+        return {
+            compare: function(actual, expected){
+                var result = {}
+                result.pass = actual === 2;
+
+                if(!result.pass){
+                    result.message = "Expected " + actual + " to be exactly 2";
+                }
+
+                return result;
+            }
+        }
+    }
+}
+
+Um Matcher é basicamente uma função, então nós criamos essa função. 
+Essas funções recebem 2 parâmetros: util, que possui funcionalidades para Matchers; e 
+customEqualityTesters, que precisa ser passado se chamarmos o “utils.equals”.
+
+A função do Matcher deve retornar um objeto que possua uma função chamada “compare()”, 
+a qual recebe o valor atual (passado para a função “expect()”) e o esperado, passado para o Matcher.
+
+Esta função “compare()” deve retornar um objeto, o qual possui um atributo “pass”, que indica se o teste passou ou não. 
+Para esse atributo, nós pegamos o valor atual e verificamos se ele é igual a 2.
+
+Outro atributo que o objeto retornado da função “compare()” possui é o “message”. 
+É nesse atributo que colocamos uma mensagem caso algo ocorra. Nós verificamos que caso o valor não seja 2, 
+mostraremos uma mensagem dizendo que esperava-se que o valor fosse exatamente 2.
+
+No final nós retornamos o objeto
+
+Agora nós precisamos registrar esse Matcher. Como foi dito, é necessário iniciar antes de cada spec. 
+Para isso, nós registramos dentro da função “beforeEach()”.
+
+beforeEach(function(){
+    jasmine.addMatchers(myMatchers);
+})
+
+A função “jasmine.addMatchers()” será responsável por registrar os Matchers. 
+Agora é só usar o nosso Matcher como fizemos com os outros:
+
+it('is 2', function(){
+    expect(2).toBe2();
+})
+
+
+---------------------------------------------
+- Before e After
+
+Uma funcionalidade muito útil é a possibilidade de executar um código antes ou depois da execução de cada spec. 
+Normalmente é usado para declarar variáveis e então limpar seus valores antes que cada teste seja executado.
+
+O “beforeEach()” nós vimos antes. Usamos para poder registrar o Matcher que criamos. 
+Também há a função “afterEach()”, para executar um código depois de cada spec.
+
+describe('Anagram', function(){
+    var result = 2;
+    afterEach(function(){
+        result = 2;
+    })
+    it('has to result in 5', function(){
+        result += 3;
+        expect(result).toEqual(5);
+    })
+    it('has to result in 9', function(){
+        result += 7;
+        expect(result).toEqual(9);
+    })
+})
+
+Isso pode ser importante, porque às vezes executamos uma função que altera o estado de um objeto ou variável, 
+deixando-os sujos para o teste seguinte. 
+Então um dos principais objetivos dessas funções “beforeEach()” e “afterEach()” é limpar, reiniciar o estado do que 
+estamos testando.
+
+Além dessas duas funções que executam antes e depois de cada “it()”, 
+também temos as funções “beforeAll()” e “afterAll()”. 
+A diferença aqui é que elas só executam uma vez antes e depois da execução de todas as Specs.
+
+
+---------------------------------------------
+- Suítes Aninhadas
+
+Conforme nosso código for ficando cada vez mais complexo, pode ser interessante organizarmos melhor as nossas suítes 
+de teste. Para isso, o Jasmine permite que a gente as aninhe.
+
+Podemos imaginar o nosso exemplo de anagramas. Poderíamos organizar melhor se separássemos os testes que envolvem 
+letras dos que envolvem números.
+
+describe('Anagram', function(){
+    describe('Letters', function(){
+        it('is true when "abc" and "cba"', function(){
+            expect(isAnagram('abc','cba')).toEqual(true);
+        })
+        it('is true when "Amor" and "Roma"', function(){
+            expect(isAnagram('Amor','Roma')).toEqual(true);
+        })
+        it('is true when two empty strings', function(){
+            expect(isAnagram('', '')).toEqual(true);
+        })
+    })
+    describe('Numbers', function(){
+        it('is true when "132" and 312', function(){
+            expect(isAnagram('132', 312)).toEqual(true);
+        })
+        it('is true when "0.12" and "102"', function(){
+            expect(isAnagram('0.12', '102')).toEqual(true);
+        })
+        it('is true when 0.12 and "102"', function(){
+            expect(isAnagram(0.12, '102')).toEqual(true);
+        })
+        it('is false when 012 and 102', function(){
+            expect(isAnagram(012, 102)).toEqual(false);
+        })
+    })
+})
+
+
+---------------------------------------------
+- Pulando Specs e Suítes
+
+Pode ser que em algumas ocasiões a gente queira evitar algumas suítes ou specs. 
+Talvez a gente ainda não tenha terminado o código, ou é algo a ser ignorado no momento. 
+Nesse caso, normalmente as pessoas comentam o código.
+
+Para ignorar uma spec, basta colocar um “x” na frente do nome da função “it()”, chamando-a agora de “xit()”.
+
+describe('letters', function(){
+        xit('is true when "abc" and "cba"', function(){
+            expect(isAnagram('abc','cba')).toEqual(true);
+        })
+})
+
+Para ignorar uma suíte inteira, basta colocar um “x” na frente do nome da função “describe()”:
+
+xdescribe('letters', function(){
+        it('is true when "abc" and "cba"', function(){
+            expect(isAnagram('abc','cba')).toEqual(true);
+        })
+})
+
+Caso queira ignorar specs de uma certa linha para baixo, use o comando return
+
+describe('letters', function(){
+        it('is true when "abc" and "cba"', function(){
+            expect(isAnagram('abc','cba')).toEqual(true);
+        })
+        return; // A funcao "describe()" sera interrompida aqui.
+
+        it('is true when "Amor" and "Roma"', function(){
+            expect(isAnagram('Amor','Roma')).toEqual(true);
+        })
+        it('is true when two empty strings', function(){
+            expect(isAnagram('', '')).toEqual(true);
+        })
+})
+
+Ao contrário da exclusão xit() e xdescribe(), que evitam a execução, também há o foco (fit() e fdescribe(). 
+Quando presentes, apenas essas funções serão executadas, ignorando qualquer it() e describe() presentes.
+
+
+---------------------------------------------
+- Comparando tipos de valores
+
+Pode ser que em alguns casos a gente não queira saber qual o valor retornado de uma função, mas sim, o tipo retornado
+
+expect(isAnagram('abc','cba')).toEqual(jasmine.any(Boolean));
+expect(new MyObject).toEqual(jasmine.any(MyObject));
+
+
+---------------------------------------------
+- Spies
+
+um Spy nos permite verificar pedaços de código, modificar funções, rastrear chamadas de funções e seus parâmetros.
+Então ele pode ser uma função ou objeto que nos permite substituir um pedaço de código.
+
+Um Spy só existe no bloco em que foi declarado. Após isso, ele é removido.
+
+
+---------------------------------------------
+- Usando Spies
+
+Vamos fazer um exemplo bem simples com um Spy. 
+Vamos criar uma classe Calculator, que possui uma função para cálculo, e uma classe Person
+
+A classe Person irá usar a classe Calculator para poder fazer cálculos aleatórios.
+
+class Calculator{
+    sum(n1, n2){
+        return n1 + n2;
+    }
+}
+
+class Person{
+    randomCalc(calculator){
+        var n1 = parseInt(Math.random()*10),
+            n2 = parseInt(Math.random()*10);
+        return `${n1} + ${n2} = ${calculator.sum(n1,n2)}`;
+    }
+}
+
+Agora nós queremos testar se a função “sum()” de Calculator está sendo usada. 
+Basta substituirmos a função “sum()” por um Spy, e ele nos dirá se a função foi chamada ou não.
+
+describe('Person', function(){
+    it('uses the Calculator to sum', function(){
+        var calculator = new Calculator();
+        var person = new Person();
+
+        spyOn(calculator, 'sum');
+        person.randomCalc(calculator);
+        expect(calculator.sum).toHaveBeenCalled();
+    })
+})
+
+Nós instanciamos as classes Calculator e Person. Então nós usamos a função “spyOn()” para substituir uma função 
+por um Spy. Para isso, passamos o objeto e indicamos o nome da função que queremos substituir.
+
+Em seguida executamos a função “randomCalc()” de Person normalmente, passando o Calculator para a função.
+
+Por fim, fazemos o teste, indicando que espera-se que a função “sum()” de Calculator tenha sido chamada.
+
+Além de verificar se uma função foi chamada, também podemos ver se determinada função 
+foi chamada com determinado parâmetro.
+
+
+describe('Person', function(){
+    it('uses the Calculator to sum', function(){
+        var calculator = new Calculator();
+        var person = new Person();
+
+        spyOn(person, 'randomCalc');
+        person.randomCalc(calculator);
+        expect(person.randomCalc).toHaveBeenCalledWith(calculator);
+    })
+})
+
+Agora nós colocamos um Spy no lugar da função “randomCalc()” da classe Person. 
+Executamos a função normalmente, passando o Calculator para ela.
+
+No teste, verificamos se a função “randomCalc()” foi chamada com “calculator” como seu parâmetro.
+
+
+---------------------------------------------
+- Spies retornando valores
+
+Quando um Spy substitui uma função, ele não faz nada.
+
+Se você reparar, nossa função “randomCalc()”, que deveria retornar uma string, não está retornando nada, 
+já que substituímos por um Spy
+
+Para ter certeza de que o Spy, quando executado, mantenha o retorno da função original, 
+basta executar a função “callThrough()”.
+
+describe('Person', function(){
+    it('uses the Calculator to sum', function(){
+        var calculator = new Calculator();
+        var person = new Person();
+
+        spyOn(person, 'randomCalc').and.callThrough();
+        var result = person.randomCalc(calculator);
+        expect(person.randomCalc).toHaveBeenCalledWith(calculator);
+    })
+})
+
+A variável “result” agora terá o valor esperado. Caso a gente remova o “.and.callThrough()”, 
+result ficará com o valor “undefined”.
+
+Além do valor original de uma função, também podemos fazer com que um Spy retorne um valor de nossa escolha.
+
+describe('Person', function(){
+    it('uses the Calculator to sum', function(){
+        var calculator = new Calculator();
+        var person = new Person();
+
+        spyOn(person, 'randomCalc').and.returnValue(53184);
+        var result = person.randomCalc(calculator);
+        console.log(result);
+        expect(person.randomCalc).toHaveBeenCalledWith(calculator);
+    })
+})
+
+O que fizemos aqui foi usar a função “returnValue()” para injetar um valor de nossa escolha. 
+Esse valor será o retorno da função substituída pelo Spy.
+
+Isso também pode ser útil para testar o que acontece com o seu código caso alguma função 
+retorne algo diferente do esperado.
+
+Além de valores retornados, nós podemos até mesmo alterar o código a ser executado por uma função. 
+Basta criarmos uma nova função e chamar com “callFake()”.
+
+describe('Person', function(){
+    it('uses the Calculator to sum', function(){
+        var calculator = new Calculator();
+        var person = new Person();
+
+        var fakeFunction = function(){
+            return 'my fake function!';
+        }
+
+        spyOn(person, 'randomCalc').and.callFake(fakeFunction);
+        var result = person.randomCalc(calculator);
+        console.log(result);
+        expect(person.randomCalc).toHaveBeenCalledWith(calculator);
+    })
+})
+
+
+---------------------------------------------
+- Criando Spies para funções que não existem
+
+O que vimos anteriormente são modos de criar Spies para substituir funções que já existem. 
+Há também a possibilidade de criarmos Spies para funções que ainda não foram criadas.
+
+describe('Person', function(){
+    it('uses the Calculator to divide', function(){
+        var calculator = new Calculator();
+        var person = new Person();
+
+        person.randomDiv = jasmine.createSpy('div spy');
+        person.randomDiv();
+
+        expect(person.randomDiv).toHaveBeenCalled();
+    })
+})
+
+Assim como os Spies criados anteriormente, esse também possui os mesmos métodos, 
+como o que força um valor como retorno.
+
+describe('Person', function(){
+    it('uses the Calculator to divide', function(){
+        var calculator = new Calculator();
+        var person = new Person();
+
+        person.randomDiv = jasmine.createSpy('div spy').and.returnValue(5);
+
+        expect(person.randomDiv()).toEqual(5);
+    })
+})
+
+
+---------------------------------------------
+- Criando objetos Spy
+
+Assim como podemos criar funções Spy, podemos também criar objetos.
+
+var tape;
+
+beforeEach(function() {
+    tape = jasmine.createSpyObj('tape', ['play', 'pause', 'stop', 'rewind']);
+
+    tape.play();
+    tape.pause();
+    tape.rewind(0);
+});
+
+Aqui nós usamos a função “createSpyObj()”, onde passamos o nome do objeto que queremos criar. 
+Em seguida, passamos uma lista de funções. Todas as funções declaradas são Spies também, o que significa que 
+podemos pegar qualquer uma dessas funções e executar qualquer função dos Spies que aprendemos.
+
+
+---------------------------------------------
+- Outras propriedades dos Spies
+
+Quando criamos um Spy, ele acaba nos fornecendo também uma propriedade chamada “calls”, 
+que nos permite obter ainda mais informações sobre as funções.
+
+.calls.any()
+retorna “false” se o Spy não foi chamado e “true” se alguma chamada já foi realizada
+
+.calls.count()
+retorna o número de vezes que o Spy foi chamado
+
+.calls.argsFor(index)
+retorna os parâmetros passados para a função de acordo com o índice indicado. Ex:
+
+setValues(5, 37);
+setValues.calls.argsFor(1) // retorna 37
+
+.calls.allArgs()
+retorna todos os parâmetros passados para a função
+
+.calls.all()
+retorna o contexto (this) e parâmetros passados pelas chamadas
+
+.calls.mostRecent()
+retorna o contexto (this) e parâmetros passados pela chamada mais recente
+
+.calls.first()
+retorna o contexto (this) e parâmetros passados pela primeira chamada
+
+.calls.reset()
+limpa todos os dados armazenados pelo Spy
+
+
+---------------------------------------------
+- Como testar códigos assíncronos?
+
+Aqui temos um código de exemplo. 
+Ele simplesmente tem um “setTimeout()” que demora 2 segundos antes de passar um valor para uma variável.
+
+var myValue = 0;
+function myAsyncFunc(){
+    setTimeout(function(){
+        myValue = 10;
+    }, 2000)
+}
+
+describe('Async Function', function(){
+    it('should be 10', function(){
+        expect(myValue).toEqual(10);
+    })
+})
+
+O teste vai falhar, pois ele é executado antes que o "setTimeout()" seja finalizado.
+
+Para testes assíncronos com o Jasmine, precisamos chamar o código assíncrono antes que o spec seja executado. 
+Para garantir isso vamos ter que colocar nosso código assíncrono dentro do “beforeEach()”.
+
+Também temos que avisar ao Jasmine quando a função assíncrona for finalizada. F
+azemos isso chamando uma função especial chamada “done()”.
+
+var myValue = 0;
+
+function myAsyncFunc(done){
+    setTimeout(function(){
+        myValue = 10;
+        done();
+    }, 2000)
+}
+
+describe('Async Function', function(){
+    beforeEach(function(done){
+        myAsyncFunc(done);
+    })
+
+    it('should be 10', function(){
+        expect(myValue).toEqual(10);
+    })
+})
+
+Certo, agora isso funciona. Mas em um cenário real não faz sentido chamarmos uma função “done()” 
+só para que um framework de testes possa funcionar.
+
+Uma ideia seria o uso de algo como callbacks ou Promises. 
+Assim nós podemos chamar a função e garantir que o código da função foi executado, e então executar o “done()”
+no próprio escopo do Jasmine.
+
+var myValue = 0;
+function myAsyncFunc(){
+    var promise = new Promise(function(resolve, reject){
+        setTimeout(function(){
+            myValue = 10;
+            resolve(myValue);
+        }, 2000)
+    })
+    return promise;
+}
+
+describe('Async Function', function(){
+    beforeEach(function(done){
+        myAsyncFunc().then(done);
+    })
+
+    it('should be 10', function(){
+        expect(myValue).toEqual(10);
+    })
+})
+
+Agora nossa função funciona com Promises. 
+Ao invés de chamarmos a função “done()” dentro da nossa função, nós executamos ela quando a Promise for resolvida, 
+dentro do próprio “beforeEach()”.
+
+As Specs também fornecem a função “done()”. 
+Então também podemos chamar uma função assíncrona dentro de uma função “it()”.
+
+    it('should be 10', function(done){
+        myAsyncFunc().then(function(){
+            expect(myValue).toEqual(10);
+            done();
+        });
+    })
+
+
+
+
+
+
+
+
+
+
